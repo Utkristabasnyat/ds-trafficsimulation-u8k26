@@ -28,7 +28,7 @@ int main() {
 
   load_traffic(traffic);
 
-  // Stop the simulation if no traffic data was loaded
+  // Bug 1: Stop if no traffic data was loaded
   if (traffic.empty()) {
     cout << "Simulation stopped: No traffic data available.\n";
     return 1;
@@ -58,7 +58,7 @@ void load_traffic(TrafficMap &traffic) {
   string line;
   int count = 0;
 
-  // Read each traffic record from the file
+  // Read each traffic record
   while (getline(file, line)) {
     string intersection;
     string laneText;
@@ -70,26 +70,33 @@ void load_traffic(TrafficMap &traffic) {
     getline(ss, laneText, ',');
     getline(ss, vehicleText, ',');
 
-    // Bug 4: Warn about incomplete records
+    // Bug 4: Check for missing information
     if (intersection.empty() || laneText.empty() || vehicleText.empty()) {
       cout << "Warning: Incomplete traffic record. Skipping.\n";
       continue;
     }
 
-    // Handle invalid numbers without crashing
+    // Bug 2: Handle invalid numbers without crashing
     try {
-      int lane = stoi(laneText);
+      // Bug 6: Reject extra characters in lane numbers
+      size_t lanePosition = 0;
+      int lane = stoi(laneText, &lanePosition);
 
-      // Bug 5: Reject vehicle IDs containing extra characters
-      size_t position = 0;
-      int vehicleID = stoi(vehicleText, &position);
+      if (lanePosition != laneText.size()) {
+        cout << "Warning: Invalid lane format. Skipping.\n";
+        continue;
+      }
 
-      if (position != vehicleText.size()) {
+      // Bug 5: Reject extra characters in vehicle IDs
+      size_t vehiclePosition = 0;
+      int vehicleID = stoi(vehicleText, &vehiclePosition);
+
+      if (vehiclePosition != vehicleText.size()) {
         cout << "Warning: Invalid vehicle ID format. Skipping.\n";
         continue;
       }
 
-      // Only lanes 1, 2, and 3 are valid
+      // Bug 3: Only lanes 1, 2, and 3 are valid
       if (lane >= 1 && lane <= 3) {
         traffic[intersection][lane - 1].push_back(vehicleID);
         count++;

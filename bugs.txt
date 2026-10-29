@@ -26,3 +26,8 @@ Bug 5: Extra characters in vehicle ID
 Problem: When a vehicle ID contain numbers followed by letters, the program accepted record because stoi() ignored the extra characters.
 Fix: Added a position check after stoi() to make sure the entire vehicle ID contains only a valid number.
 Testing: Changed vehicle ID 101 to 101ABC. The program displayed a warning and loaded only 99 valid records. After restoring the original file, all 100 records loaded successfully.
+
+Bug 6: Extra characters in lane number
+Problem: When a lane number contained numbers followed by letters, the program accepted the record because stoi() ignored the extra characters.
+Fix: Added a position check after stoi() to make sure the entire lane number is valid.
+Testing: Changed lane number 1 to 1ABC. The program display a warning and loaded only 99 valid records. After restoring the original file, all 100 records loaded successfully.
