@@ -21,3 +21,8 @@ Bug 4: Incomplete traffic record
 Problem: When a traffic record was missing required information, the program silently skipped it without displaying a warning.
 Fix: Added a warning message when intersection, lane number or vehicle ID is missing.
 Testing: Removed vehicle ID 101 from the first record. The program displayed a warning and loaded the remaining 99 valid records.
+
+Bug 5: Extra characters in vehicle ID
+Problem: When a vehicle ID contain numbers followed by letters, the program accepted record because stoi() ignored the extra characters.
+Fix: Added a position check after stoi() to make sure the entire vehicle ID contains only a valid number.
+Testing: Changed vehicle ID 101 to 101ABC. The program displayed a warning and loaded only 99 valid records. After restoring the original file, all 100 records loaded successfully.

@@ -70,6 +70,7 @@ void load_traffic(TrafficMap &traffic) {
     getline(ss, laneText, ',');
     getline(ss, vehicleText, ',');
 
+    // Bug 4: Warn about incomplete records
     if (intersection.empty() || laneText.empty() || vehicleText.empty()) {
       cout << "Warning: Incomplete traffic record. Skipping.\n";
       continue;
@@ -78,7 +79,15 @@ void load_traffic(TrafficMap &traffic) {
     // Handle invalid numbers without crashing
     try {
       int lane = stoi(laneText);
-      int vehicleID = stoi(vehicleText);
+
+      // Bug 5: Reject vehicle IDs containing extra characters
+      size_t position = 0;
+      int vehicleID = stoi(vehicleText, &position);
+
+      if (position != vehicleText.size()) {
+        cout << "Warning: Invalid vehicle ID format. Skipping.\n";
+        continue;
+      }
 
       // Only lanes 1, 2, and 3 are valid
       if (lane >= 1 && lane <= 3) {
@@ -88,6 +97,7 @@ void load_traffic(TrafficMap &traffic) {
         cout << "Warning: Invalid lane number "
              << lane << ". Record skipped.\n";
       }
+
     } catch (const invalid_argument &e) {
       cout << "Warning: Invalid number in traffic record. Skipping.\n";
     } catch (const out_of_range &e) {
@@ -159,6 +169,7 @@ void simulate_traffic(TrafficMap &traffic, int minutes) {
 
     cout << "\nTraffic conditions after minute "
          << minute << ":\n";
+
     display_traffic(traffic);
   }
 }
