@@ -14,6 +14,7 @@
 #include <sstream>
 #include <stdexcept>
 #include <set>
+#include <limits>
 
 using namespace std;
 
@@ -155,7 +156,33 @@ void display_traffic(const TrafficMap &traffic) {
 void simulate_traffic(TrafficMap &traffic, int minutes) {
   cout << "\nStarting traffic simulation...\n";
 
+  // Bug 9: Start after the highest existing vehicle ID
   int nextVehicleID = 201;
+
+  for (const auto &intersection : traffic) {
+    for (const auto &lane : intersection.second) {
+      for (int vehicleID : lane) {
+        if (vehicleID >= nextVehicleID) {
+          if (vehicleID == numeric_limits<int>::max()) {
+            cout << "Error: No available vehicle IDs.\n";
+            return;
+          }
+
+          nextVehicleID = vehicleID + 1;
+        }
+      }
+    }
+  }
+
+  // Make sure enough IDs are available for all new arrivals
+  long long totalArrivals =
+      static_cast<long long>(minutes) * traffic.size();
+
+  if (static_cast<long long>(nextVehicleID) + totalArrivals - 1 >
+      numeric_limits<int>::max()) {
+    cout << "Error: Not enough available vehicle IDs.\n";
+    return;
+  }
 
   for (int minute = 1; minute <= minutes; minute++) {
     int greenLane = (minute - 1) % 3;

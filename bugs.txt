@@ -41,3 +41,8 @@ Bug 8: Duplicate vehicle IDs
 Problem: The program accept duplicate vehicle IDs allowing same vehicle to appear in multiple lanes.
 Fix: Added a set to track vehicle IDs and reject duplicate IDs with a warning.
 Testing: Changed vehicle ID 101 to 102, which already existed in another lane. The program displayed a duplicate ID warning and loaded only 99 valid records. After restoring the original file all 100 records loaded successfully.
+
+Bug 9: New vehicle ID conflicts with existing ID
+Problem: The simulation always started assigning new vehicle IDs at 201, even when the input file already contain vehicle ID 201 or higher.
+Fix: Updated the simulation to find highest existing vehicle ID and assign new IDs starting after that number. Added a check for integer limits.
+Testing: Changed vehicle ID 101 to 201. Before the fix, program assigned vehicle ID 201 again. After the fix, the first new vehicle received ID 202. After restoring the original file, new vehicle IDs started at 201 as expected.
