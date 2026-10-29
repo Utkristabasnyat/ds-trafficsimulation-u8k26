@@ -16,3 +16,8 @@ Bug 3: Invalid lane number
 Problem: When a traffic record contained a lane number outside the valid range of 1 to 3, the program silently skipped the record without explaining the problem.
 Fix: Added an else statement to display a warning when an invalid lane number is found.
 Testing: Changed the first record from lane 1 to lane 4. The program displayed a warning, skipped the invalid record, and loaded the remaining 99 records.
+
+Bug 4: Incomplete traffic record
+Problem: When a traffic record was missing required information, the program silently skipped it without displaying a warning.
+Fix: Added a warning message when intersection, lane number or vehicle ID is missing.
+Testing: Removed vehicle ID 101 from the first record. The program displayed a warning and loaded the remaining 99 valid records.

@@ -71,6 +71,7 @@ void load_traffic(TrafficMap &traffic) {
     getline(ss, vehicleText, ',');
 
     if (intersection.empty() || laneText.empty() || vehicleText.empty()) {
+      cout << "Warning: Incomplete traffic record. Skipping.\n";
       continue;
     }
 
