@@ -11,3 +11,13 @@ Bug 2: Invalid vehicle ID
 Problem: When a vehicle ID contained letters instead of a number, the program crashed because stoi() could not convert the text.
 Fix: Added try and catch blocks to handle invalid_argument and out_of_range exceptions, allowing program to skip invalid records.
 Testing: Changed first vehicle ID from 101 to ABC. The program displayed a warning, loaded the remaining 99 valid records and continued without crashing.
+
+Bug 3: Invalid lane number
+Problem: When a traffic record contained a lane number outside the valid range of 1 to 3, the program silently skipped the record without explaining the problem.
+Fix: Added an else statement to display a warning when an invalid lane number is found.
+Testing: Changed the first record from lane 1 to lane 4. The program displayed a warning, skipped the invalid record, and loaded the remaining 99 records.
+
+Bug 3: Invalid lane number
+Problem: When a traffic record contained a lane number outside the valid range of 1 to 3, the program silently skip record without explaining the problem.
+Fix: Added an else statement to display a warning when an invalid lane number is found.
+Testing: Changed first record from lane 1 to lane 4. The program displayed a warning, skipped the invalid record and loaded the remaining 99 records.

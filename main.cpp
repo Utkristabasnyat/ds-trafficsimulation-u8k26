@@ -79,9 +79,13 @@ void load_traffic(TrafficMap &traffic) {
       int lane = stoi(laneText);
       int vehicleID = stoi(vehicleText);
 
+      // Only lanes 1, 2, and 3 are valid
       if (lane >= 1 && lane <= 3) {
         traffic[intersection][lane - 1].push_back(vehicleID);
         count++;
+      } else {
+        cout << "Warning: Invalid lane number "
+             << lane << ". Record skipped.\n";
       }
     } catch (const invalid_argument &e) {
       cout << "Warning: Invalid number in traffic record. Skipping.\n";
