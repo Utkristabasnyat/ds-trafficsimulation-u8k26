@@ -101,6 +101,8 @@ void display_traffic(const TrafficMap &traffic) {
 void simulate_traffic(TrafficMap &traffic, int minutes) {
   cout << "\nStarting traffic simulation...\n";
 
+  int nextVehicleID = 201;
+
   for (int minute = 1; minute <= minutes; minute++) {
     int greenLane = (minute - 1) % 3;
 
@@ -108,6 +110,18 @@ void simulate_traffic(TrafficMap &traffic, int minutes) {
     cout << "Lane " << greenLane + 1 << " has a green light.\n";
 
     for (auto &intersection : traffic) {
+      // Add one arriving vehicle to each intersection
+      int arrivalLane = minute % 3;
+
+      intersection.second[arrivalLane].push_back(nextVehicleID);
+
+      cout << "Vehicle " << nextVehicleID
+           << " arrived at " << intersection.first
+           << " in Lane " << arrivalLane + 1 << ".\n";
+
+      nextVehicleID++;
+
+      // Remove the first vehicle from the green lane
       list<int> &lane = intersection.second[greenLane];
 
       if (!lane.empty()) {
