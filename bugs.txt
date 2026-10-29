@@ -46,3 +46,8 @@ Bug 9: New vehicle ID conflicts with existing ID
 Problem: The simulation always started assigning new vehicle IDs at 201, even when the input file already contain vehicle ID 201 or higher.
 Fix: Updated the simulation to find highest existing vehicle ID and assign new IDs starting after that number. Added a check for integer limits.
 Testing: Changed vehicle ID 101 to 201. Before the fix, program assigned vehicle ID 201 again. After the fix, the first new vehicle received ID 202. After restoring the original file, new vehicle IDs started at 201 as expected.
+
+Bug 10: Extra columns in traffic records
+Problem: The program accepted traffic records containing more than three columns because it ignored extra information after vehicle ID.
+Fix: Added a check to detect extra columns and skip invalid records with a warning.
+Testing: Added EXTRA as a fourth column to the first record. Before the fix the program accepted all 100 records. After the fix, it display a warning and loaded only 99 valid records. After restoring the original file, all 100 records loaded successfully.

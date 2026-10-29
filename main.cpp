@@ -75,6 +75,15 @@ void load_traffic(TrafficMap &traffic) {
     getline(ss, laneText, ',');
     getline(ss, vehicleText, ',');
 
+    // Bug 10: Reject records with extra columns
+    string extraText;
+
+    if (getline(ss, extraText, ',') ||
+        (!line.empty() && line.back() == ',')) {
+      cout << "Warning: Extra column in traffic record. Skipping.\n";
+      continue;
+    }
+
     // Bug 4: Check for missing information
     if (intersection.empty() || laneText.empty() || vehicleText.empty()) {
       cout << "Warning: Incomplete traffic record. Skipping.\n";
@@ -174,7 +183,7 @@ void simulate_traffic(TrafficMap &traffic, int minutes) {
     }
   }
 
-  // Make sure enough IDs are available for all new arrivals
+  // Check that enough IDs are available for all arrivals
   long long totalArrivals =
       static_cast<long long>(minutes) * traffic.size();
 
