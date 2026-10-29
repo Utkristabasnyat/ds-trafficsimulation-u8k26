@@ -1,0 +1,56 @@
+Unit Testing - City Traffic Flow Simulation
+Lab 30: Alpha Release
+
+For this project, I would use unit testing to check if each function works correctly before testing entire simulation.
+
+The first function I would test is load_traffic(). This function reads vehicle information from traffic.txt and stores it in a map containing array of three lists for each intersection.
+
+To test this function I would create an empty TrafficMap, call load_traffic() and check whether the correct number of vehicle records was loaded. I would also check that the map contains expected intersections and that vehicle are store in the correct lanes.
+
+For example, vehicle 101 should be in Lane 1 of Main Street. I would also test what happen if traffic file is missing or contains invalid data.
+
+I would test display_traffic() by checking that it prints the intersections, lane numbers and vehicle IDs correctly.
+
+For simulate_traffic(), I would test that the function receives the number of minutes correctly. When the actual simulation is implemented, I would also test whether arriving vehicle are added and departing vehicles are removed correctly.
+
+Unit Test Driver Example:
+
+'''cpp
+#include <iostream>
+#include <map>
+#include <array>
+#include <list>
+#include <string>
+
+using namespace std;
+
+typedef map<string, array<list<int>, 3>> TrafficMap;
+
+void load_traffic(TrafficMap &traffic);
+
+int main() {
+  TrafficMap testTraffic;
+
+  load_traffic(testTraffic);
+
+  cout << "Testing load_traffic()...\n";
+
+  if (testTraffic.size() == 3) {
+    cout << "PASS: Three intersections loaded.\n";
+  } else {
+    cout << "FAIL: Incorrect number of intersections.\n";
+  }
+
+  if (!testTraffic["Main Street"][0].empty() &&
+      testTraffic["Main Street"][0].front() == 101) {
+    cout << "PASS: Vehicle 101 is in Main Street Lane 1.\n";
+  } else {
+    cout << "FAIL: Vehicle 101 is missing or in the wrong lane.\n";
+  }
+
+  return 0;
+}
+'''
+
+This driver would be compiled together with the function implementation or used in a test build of the project. 
+It checks the data loaded into the map and reports whether the expected results were found.
