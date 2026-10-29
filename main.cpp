@@ -1,10 +1,8 @@
 
 /*
-  Name: Utkrista Mardan Basnyat
   Course: COMSC-210 Data Structures
-  Lab 29: Project Proposal, Pseudocode, and Mockup
+  Lab 30: Alpha Release
   Project: City Traffic Flow Simulation
-  File: main.cpp
 */
 
 #include <iostream>
@@ -13,10 +11,10 @@
 #include <list>
 #include <string>
 #include <fstream>
+#include <sstream>
 
 using namespace std;
 
-// Each intersection has three lane containing vehicle IDs
 typedef map<string, array<list<int>, 3>> TrafficMap;
 
 // Function prototypes
@@ -25,25 +23,16 @@ void display_traffic(const TrafficMap &traffic);
 void simulate_traffic(TrafficMap &traffic, int minutes);
 
 int main() {
-  // Create a map of intersections with three traffic lanes each
   TrafficMap traffic;
 
-  // Load vehicle information from an external file
-  // Future implementation:
-  // Open traffic data file
-  // Read at least 100 line of vehicle data
-  // Store seach vehicle in the correct intersection and lane
   load_traffic(traffic);
 
-  // Display the initial traffic conditions
-  cout << "CITY TRAFFIC FLOW SIMULATION\n";
+  cout << "\nCITY TRAFFIC FLOW SIMULATION\n";
   cout << "Initial Traffic Conditions:\n";
   display_traffic(traffic);
 
-  // Simulate traffic changes for 30 one minute periods
   simulate_traffic(traffic, 30);
 
-  // Display traffic conditions after the simulation
   cout << "\nFinal Traffic Conditions:\n";
   display_traffic(traffic);
 
@@ -51,24 +40,49 @@ int main() {
 }
 
 void load_traffic(TrafficMap &traffic) {
-  // Future implementation:
-  // Open an external file containing vehicle records
-  // Read each vehicle ID, intersection and lane
-  // Add vehicles to the appropriate lists
+  // Open the external data file
+  ifstream file("traffic.txt");
 
-  // Mockup: insert one sample vehicle into lane 1
-  traffic["Main Street"][0].push_back(101);
+  if (!file.is_open()) {
+    cout << "Error: Could not open traffic.txt\n";
+    return;
+  }
 
-  cout << "Sample traffic data loaded.\n\n";
+  string line;
+  int count = 0;
+
+  // Read each traffic record from the file
+  while (getline(file, line)) {
+    string intersection;
+    string laneText;
+    string vehicleText;
+
+    stringstream ss(line);
+
+    getline(ss, intersection, ',');
+    getline(ss, laneText, ',');
+    getline(ss, vehicleText, ',');
+
+    if (intersection.empty() || laneText.empty() || vehicleText.empty()) {
+      continue;
+    }
+
+    int lane = stoi(laneText);
+    int vehicleID = stoi(vehicleText);
+
+    if (lane >= 1 && lane <= 3) {
+      traffic[intersection][lane - 1].push_back(vehicleID);
+      count++;
+    }
+  }
+
+  file.close();
+
+  cout << count << " vehicle records loaded from traffic.txt\n";
 }
 
 void display_traffic(const TrafficMap &traffic) {
-  // Future implementation:
-  // Loop through each intersection in the map
-  // Loop through all three lanes in its array
-  // Display the vehicle IDs stored in each list
-
-  // Mockup: demonstrate that nested structure works
+  // Display intersections and their three lanes
   for (const auto &intersection : traffic) {
     cout << "Intersection: " << intersection.first << endl;
 
@@ -85,16 +99,10 @@ void display_traffic(const TrafficMap &traffic) {
 }
 
 void simulate_traffic(TrafficMap &traffic, int minutes) {
-  // Future implementation:
-  // Repeat the simulation for the requested number of minutes
-  // At each minute:
-  // Process vehicles arriving from data file
-  // Update the traffic lights for each intersection
-  // Allow vehicles to depart from lanes with a green light
-  // Display changes and current traffic conditions
-  // After at least 25 periods, show the final traffic state
+  // Alpha mockup: show example events
+  // Future version will process real arrivals and departures
+  // during each of the 30 simulated minutes
 
-  // Mockup: print a message to confirm the function works
   cout << "\nSimulation function received "
        << minutes << " minutes.\n";
 
