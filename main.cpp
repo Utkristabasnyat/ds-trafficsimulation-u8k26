@@ -100,4 +100,8 @@ void simulate_traffic(TrafficMap &traffic, int minutes) {
 
   cout << "Intersections available: "
        << traffic.size() << endl;
+
+  cout << "Minute 1: Sample traffic light change.\n";
+  cout << "Minute 2: Sample vehicle arrival.\n";
+  cout << "Minute 3: Sample vehicle departure.\n";
 }
