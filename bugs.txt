@@ -6,3 +6,8 @@ Bug 1: Missing traffic file
 Problem: When traffic.txt was missing, program display an error but continued running the 30 minute simulation without input data.
 Fix: Added a check in main() to stop the program when  traffic map is empty.
 Testing: Renamed traffic.txt temporarily and ran the program again. The program now displays an error and stops correctly.
+
+Bug 2: Invalid vehicle ID
+Problem: When a vehicle ID contained letters instead of a number, the program crashed because stoi() could not convert the text.
+Fix: Added try and catch blocks to handle invalid_argument and out_of_range exceptions, allowing program to skip invalid records.
+Testing: Changed first vehicle ID from 101 to ABC. The program displayed a warning, loaded the remaining 99 valid records and continued without crashing.

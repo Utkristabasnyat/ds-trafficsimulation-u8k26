@@ -12,6 +12,7 @@
 #include <string>
 #include <fstream>
 #include <sstream>
+#include <stdexcept>
 
 using namespace std;
 
@@ -73,12 +74,19 @@ void load_traffic(TrafficMap &traffic) {
       continue;
     }
 
-    int lane = stoi(laneText);
-    int vehicleID = stoi(vehicleText);
+    // Handle invalid numbers without crashing
+    try {
+      int lane = stoi(laneText);
+      int vehicleID = stoi(vehicleText);
 
-    if (lane >= 1 && lane <= 3) {
-      traffic[intersection][lane - 1].push_back(vehicleID);
-      count++;
+      if (lane >= 1 && lane <= 3) {
+        traffic[intersection][lane - 1].push_back(vehicleID);
+        count++;
+      }
+    } catch (const invalid_argument &e) {
+      cout << "Warning: Invalid number in traffic record. Skipping.\n";
+    } catch (const out_of_range &e) {
+      cout << "Warning: Number out of range in traffic record. Skipping.\n";
     }
   }
 
