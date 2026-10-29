@@ -1,7 +1,7 @@
 
 /*
   Course: COMSC-210 Data Structures
-  Lab 30: Alpha Release
+  Lab 31: Beta Release
   Project: City Traffic Flow Simulation
 */
 
@@ -99,17 +99,33 @@ void display_traffic(const TrafficMap &traffic) {
 }
 
 void simulate_traffic(TrafficMap &traffic, int minutes) {
-  // Alpha mockup: show example events
-  // Future version will process real arrivals and departures
-  // during each of the 30 simulated minutes
+  cout << "\nStarting traffic simulation...\n";
 
-  cout << "\nSimulation function received "
-       << minutes << " minutes.\n";
+  for (int minute = 1; minute <= minutes; minute++) {
+    int greenLane = (minute - 1) % 3;
 
-  cout << "Intersections available: "
-       << traffic.size() << endl;
+    cout << "\nMinute " << minute << endl;
+    cout << "Lane " << greenLane + 1 << " has a green light.\n";
 
-  cout << "Minute 1: Sample traffic light change.\n";
-  cout << "Minute 2: Sample vehicle arrival.\n";
-  cout << "Minute 3: Sample vehicle departure.\n";
+    for (auto &intersection : traffic) {
+      list<int> &lane = intersection.second[greenLane];
+
+      if (!lane.empty()) {
+        int vehicleID = lane.front();
+        lane.pop_front();
+
+        cout << "Vehicle " << vehicleID
+             << " left " << intersection.first
+             << " from Lane " << greenLane + 1 << ".\n";
+      } else {
+        cout << "No vehicles waiting in Lane "
+             << greenLane + 1 << " at "
+             << intersection.first << ".\n";
+      }
+    }
+
+    cout << "\nTraffic conditions after minute "
+         << minute << ":\n";
+    display_traffic(traffic);
+  }
 }
