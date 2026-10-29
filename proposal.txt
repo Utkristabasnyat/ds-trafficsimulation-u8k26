@@ -1,0 +1,35 @@
+# City Traffic Flow Simulation
+
+## Project Overview
+
+My projects is a City Traffic Flow Simulation that show how the vehicles traffic change at different intersections over time. The program will simulate the cars arriving at intersection, waiting in traffic and leaving when traffic light allows them to move.
+
+The Goal is to show how traffic can increase or decrease depending on numbers of arriving and departing vehicles.
+
+## Implementation
+
+I plan to use the 'std::map' to stores the traffics information for different intersections. Each intersections will be identify by its name , which will be the map's key.
+
+The values for each intersections will be three element 'std::array' containing three 'std::list'. Each list will represent a different traffic lane. The lists will store vehicle IDs so the program can track vehicles waiting at each intersection.
+
+The program will read at least 100 lines of vehicle information from an external text file and use this data to populate the map.
+
+The program will also have function for loading vehicle data, displaying traffic information and simulating changes over time.
+
+## Simulated Events
+
+The simulation will focus on three main events:
+
+1. Vehicle Arrival: New vehicles enter a traffic lane and increase the number of cars waiting.
+2. Vehicle Departure: Vehicles leave an intersection when the traffic light allows traffic to move.
+3. Traffic Light Changes: Traffic lights change during the simulation, affecting which lanes can release vehicles.
+
+These events will change number of vehicles waiting at each intersection.
+
+## Time Periods
+
+The simulation will run for 30 time periods, with each period representing one minute of traffic activity.
+
+At the beginning, program will displays initial traffic conditions at all intersections. During each minutes, program will process vehicle arrival, traffic light changes and departures.
+
+Program will displays the traffic conditions after each time period so that users can observe how the number of waiting vehicles changes over the 30 minute simulation.
