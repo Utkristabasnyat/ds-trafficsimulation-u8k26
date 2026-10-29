@@ -1,7 +1,7 @@
 
 /*
   Course: COMSC-210 Data Structures
-  Lab 30: Alpha Release
+  Lab 31: Beta Release
   Project: City Traffic Flow Simulation
 */
 
@@ -12,6 +12,9 @@
 #include <string>
 #include <fstream>
 #include <sstream>
+#include <stdexcept>
+#include <set>
+#include <limits>
 
 using namespace std;
 
@@ -26,6 +29,12 @@ int main() {
   TrafficMap traffic;
 
   load_traffic(traffic);
+
+  // Bug 1: Stop if no traffic data was loaded
+  if (traffic.empty()) {
+    cout << "Simulation stopped: No traffic data available.\n";
+    return 1;
+  }
 
   cout << "\nCITY TRAFFIC FLOW SIMULATION\n";
   cout << "Initial Traffic Conditions:\n";
@@ -51,7 +60,10 @@ void load_traffic(TrafficMap &traffic) {
   string line;
   int count = 0;
 
-  // Read each traffic record from the file
+  // Bug 8: Track vehicle IDs to prevent duplicates
+  set<int> seenVehicleIDs;
+
+  // Read each traffic record
   while (getline(file, line)) {
     string intersection;
     string laneText;
@@ -63,16 +75,68 @@ void load_traffic(TrafficMap &traffic) {
     getline(ss, laneText, ',');
     getline(ss, vehicleText, ',');
 
-    if (intersection.empty() || laneText.empty() || vehicleText.empty()) {
+    // Bug 10: Reject records with extra columns
+    string extraText;
+
+    if (getline(ss, extraText, ',') ||
+        (!line.empty() && line.back() == ',')) {
+      cout << "Warning: Extra column in traffic record. Skipping.\n";
       continue;
     }
 
-    int lane = stoi(laneText);
-    int vehicleID = stoi(vehicleText);
+    // Bug 4: Check for missing information
+    if (intersection.empty() || laneText.empty() || vehicleText.empty()) {
+      cout << "Warning: Incomplete traffic record. Skipping.\n";
+      continue;
+    }
 
-    if (lane >= 1 && lane <= 3) {
-      traffic[intersection][lane - 1].push_back(vehicleID);
-      count++;
+    // Bug 2: Handle invalid numbers without crashing
+    try {
+      // Bug 6: Reject extra characters in lane numbers
+      size_t lanePosition = 0;
+      int lane = stoi(laneText, &lanePosition);
+
+      if (lanePosition != laneText.size()) {
+        cout << "Warning: Invalid lane format. Skipping.\n";
+        continue;
+      }
+
+      // Bug 5: Reject extra characters in vehicle IDs
+      size_t vehiclePosition = 0;
+      int vehicleID = stoi(vehicleText, &vehiclePosition);
+
+      if (vehiclePosition != vehicleText.size()) {
+        cout << "Warning: Invalid vehicle ID format. Skipping.\n";
+        continue;
+      }
+
+      // Bug 7: Vehicle IDs must be positive
+      if (vehicleID <= 0) {
+        cout << "Warning: Vehicle ID must be positive. Skipping.\n";
+        continue;
+      }
+
+      // Bug 3: Only lanes 1, 2, and 3 are valid
+      if (lane >= 1 && lane <= 3) {
+        // Bug 8: Reject duplicate vehicle IDs
+        if (seenVehicleIDs.count(vehicleID) > 0) {
+          cout << "Warning: Duplicate vehicle ID "
+               << vehicleID << ". Skipping.\n";
+          continue;
+        }
+
+        seenVehicleIDs.insert(vehicleID);
+        traffic[intersection][lane - 1].push_back(vehicleID);
+        count++;
+      } else {
+        cout << "Warning: Invalid lane number "
+             << lane << ". Record skipped.\n";
+      }
+
+    } catch (const invalid_argument &e) {
+      cout << "Warning: Invalid number in traffic record. Skipping.\n";
+    } catch (const out_of_range &e) {
+      cout << "Warning: Number out of range in traffic record. Skipping.\n";
     }
   }
 
@@ -99,17 +163,74 @@ void display_traffic(const TrafficMap &traffic) {
 }
 
 void simulate_traffic(TrafficMap &traffic, int minutes) {
-  // Alpha mockup: show example events
-  // Future version will process real arrivals and departures
-  // during each of the 30 simulated minutes
+  cout << "\nStarting traffic simulation...\n";
 
-  cout << "\nSimulation function received "
-       << minutes << " minutes.\n";
+  // Bug 9: Start after the highest existing vehicle ID
+  int nextVehicleID = 201;
 
-  cout << "Intersections available: "
-       << traffic.size() << endl;
+  for (const auto &intersection : traffic) {
+    for (const auto &lane : intersection.second) {
+      for (int vehicleID : lane) {
+        if (vehicleID >= nextVehicleID) {
+          if (vehicleID == numeric_limits<int>::max()) {
+            cout << "Error: No available vehicle IDs.\n";
+            return;
+          }
 
-  cout << "Minute 1: Sample traffic light change.\n";
-  cout << "Minute 2: Sample vehicle arrival.\n";
-  cout << "Minute 3: Sample vehicle departure.\n";
+          nextVehicleID = vehicleID + 1;
+        }
+      }
+    }
+  }
+
+  // Check that enough IDs are available for all arrivals
+  long long totalArrivals =
+      static_cast<long long>(minutes) * traffic.size();
+
+  if (static_cast<long long>(nextVehicleID) + totalArrivals - 1 >
+      numeric_limits<int>::max()) {
+    cout << "Error: Not enough available vehicle IDs.\n";
+    return;
+  }
+
+  for (int minute = 1; minute <= minutes; minute++) {
+    int greenLane = (minute - 1) % 3;
+
+    cout << "\nMinute " << minute << endl;
+    cout << "Lane " << greenLane + 1 << " has a green light.\n";
+
+    for (auto &intersection : traffic) {
+      // Add one arriving vehicle to each intersection
+      int arrivalLane = minute % 3;
+
+      intersection.second[arrivalLane].push_back(nextVehicleID);
+
+      cout << "Vehicle " << nextVehicleID
+           << " arrived at " << intersection.first
+           << " in Lane " << arrivalLane + 1 << ".\n";
+
+      nextVehicleID++;
+
+      // Remove the first vehicle from the green lane
+      list<int> &lane = intersection.second[greenLane];
+
+      if (!lane.empty()) {
+        int vehicleID = lane.front();
+        lane.pop_front();
+
+        cout << "Vehicle " << vehicleID
+             << " left " << intersection.first
+             << " from Lane " << greenLane + 1 << ".\n";
+      } else {
+        cout << "No vehicles waiting in Lane "
+             << greenLane + 1 << " at "
+             << intersection.first << ".\n";
+      }
+    }
+
+    cout << "\nTraffic conditions after minute "
+         << minute << ":\n";
+
+    display_traffic(traffic);
+  }
 }

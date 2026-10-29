@@ -1,0 +1,53 @@
+City Traffic Flow Simulation
+Lab 31 - Beta Release
+Bug and Maintenance Log
+
+Bug 1: Missing traffic file
+Problem: When traffic.txt was missing, program display an error but continued running the 30 minute simulation without input data.
+Fix: Added a check in main() to stop the program when  traffic map is empty.
+Testing: Renamed traffic.txt temporarily and ran the program again. The program now displays an error and stops correctly.
+
+Bug 2: Invalid vehicle ID
+Problem: When a vehicle ID contained letters instead of a number, the program crashed because stoi() could not convert the text.
+Fix: Added try and catch blocks to handle invalid_argument and out_of_range exceptions, allowing program to skip invalid records.
+Testing: Changed first vehicle ID from 101 to ABC. The program displayed a warning, loaded the remaining 99 valid records and continued without crashing.
+
+Bug 3: Invalid lane number
+Problem: When a traffic record contained a lane number outside the valid range of 1 to 3, the program silently skipped the record without explaining the problem.
+Fix: Added an else statement to display a warning when an invalid lane number is found.
+Testing: Changed the first record from lane 1 to lane 4. The program displayed a warning, skipped the invalid record, and loaded the remaining 99 records.
+
+Bug 4: Incomplete traffic record
+Problem: When a traffic record was missing required information, the program silently skipped it without displaying a warning.
+Fix: Added a warning message when intersection, lane number or vehicle ID is missing.
+Testing: Removed vehicle ID 101 from the first record. The program displayed a warning and loaded the remaining 99 valid records.
+
+Bug 5: Extra characters in vehicle ID
+Problem: When a vehicle ID contain numbers followed by letters, the program accepted record because stoi() ignored the extra characters.
+Fix: Added a position check after stoi() to make sure the entire vehicle ID contains only a valid number.
+Testing: Changed vehicle ID 101 to 101ABC. The program displayed a warning and loaded only 99 valid records. After restoring the original file, all 100 records loaded successfully.
+
+Bug 6: Extra characters in lane number
+Problem: When a lane number contained numbers followed by letters, the program accepted the record because stoi() ignored the extra characters.
+Fix: Added a position check after stoi() to make sure the entire lane number is valid.
+Testing: Changed lane number 1 to 1ABC. The program display a warning and loaded only 99 valid records. After restoring the original file, all 100 records loaded successfully.
+
+Bug 7: Negative or zero vehicle ID
+Problem: The program accepted negative vehicle IDs cause it did not check whether a vehicle ID was positive.
+Fix: Added a condition to reject vehicle IDs less than or equal to zero and display a warning.
+Testing: Changed vehicle ID 101 to -101. The program displayed a warning and loaded only 99 valid records. After restoring the original file, all 100 records loaded successfully.
+
+Bug 8: Duplicate vehicle IDs
+Problem: The program accept duplicate vehicle IDs allowing same vehicle to appear in multiple lanes.
+Fix: Added a set to track vehicle IDs and reject duplicate IDs with a warning.
+Testing: Changed vehicle ID 101 to 102, which already existed in another lane. The program displayed a duplicate ID warning and loaded only 99 valid records. After restoring the original file all 100 records loaded successfully.
+
+Bug 9: New vehicle ID conflicts with existing ID
+Problem: The simulation always started assigning new vehicle IDs at 201, even when the input file already contain vehicle ID 201 or higher.
+Fix: Updated the simulation to find highest existing vehicle ID and assign new IDs starting after that number. Added a check for integer limits.
+Testing: Changed vehicle ID 101 to 201. Before the fix, program assigned vehicle ID 201 again. After the fix, the first new vehicle received ID 202. After restoring the original file, new vehicle IDs started at 201 as expected.
+
+Bug 10: Extra columns in traffic records
+Problem: The program accepted traffic records containing more than three columns because it ignored extra information after vehicle ID.
+Fix: Added a check to detect extra columns and skip invalid records with a warning.
+Testing: Added EXTRA as a fourth column to the first record. Before the fix the program accepted all 100 records. After the fix, it display a warning and loaded only 99 valid records. After restoring the original file, all 100 records loaded successfully.
