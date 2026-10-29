@@ -13,6 +13,7 @@
 #include <fstream>
 #include <sstream>
 #include <stdexcept>
+#include <set>
 
 using namespace std;
 
@@ -57,6 +58,9 @@ void load_traffic(TrafficMap &traffic) {
 
   string line;
   int count = 0;
+
+  // Bug 8: Track vehicle IDs to prevent duplicates
+  set<int> seenVehicleIDs;
 
   // Read each traffic record
   while (getline(file, line)) {
@@ -104,6 +108,14 @@ void load_traffic(TrafficMap &traffic) {
 
       // Bug 3: Only lanes 1, 2, and 3 are valid
       if (lane >= 1 && lane <= 3) {
+        // Bug 8: Reject duplicate vehicle IDs
+        if (seenVehicleIDs.count(vehicleID) > 0) {
+          cout << "Warning: Duplicate vehicle ID "
+               << vehicleID << ". Skipping.\n";
+          continue;
+        }
+
+        seenVehicleIDs.insert(vehicleID);
         traffic[intersection][lane - 1].push_back(vehicleID);
         count++;
       } else {

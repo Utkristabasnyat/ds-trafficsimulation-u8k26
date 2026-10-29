@@ -36,3 +36,8 @@ Bug 7: Negative or zero vehicle ID
 Problem: The program accepted negative vehicle IDs cause it did not check whether a vehicle ID was positive.
 Fix: Added a condition to reject vehicle IDs less than or equal to zero and display a warning.
 Testing: Changed vehicle ID 101 to -101. The program displayed a warning and loaded only 99 valid records. After restoring the original file, all 100 records loaded successfully.
+
+Bug 8: Duplicate vehicle IDs
+Problem: The program accept duplicate vehicle IDs allowing same vehicle to appear in multiple lanes.
+Fix: Added a set to track vehicle IDs and reject duplicate IDs with a warning.
+Testing: Changed vehicle ID 101 to 102, which already existed in another lane. The program displayed a duplicate ID warning and loaded only 99 valid records. After restoring the original file all 100 records loaded successfully.
