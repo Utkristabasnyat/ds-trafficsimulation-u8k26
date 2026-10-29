@@ -1,0 +1,8 @@
+City Traffic Flow Simulation
+Lab 31 - Beta Release
+Bug and Maintenance Log
+
+Bug 1: Missing traffic file
+Problem: When traffic.txt was missing, program display an error but continued running the 30 minute simulation without input data.
+Fix: Added a check in main() to stop the program when  traffic map is empty.
+Testing: Renamed traffic.txt temporarily and ran the program again. The program now displays an error and stops correctly.

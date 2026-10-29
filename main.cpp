@@ -27,6 +27,12 @@ int main() {
 
   load_traffic(traffic);
 
+  // Stop the simulation if no traffic data was loaded
+  if (traffic.empty()) {
+    cout << "Simulation stopped: No traffic data available.\n";
+    return 1;
+  }
+
   cout << "\nCITY TRAFFIC FLOW SIMULATION\n";
   cout << "Initial Traffic Conditions:\n";
   display_traffic(traffic);
