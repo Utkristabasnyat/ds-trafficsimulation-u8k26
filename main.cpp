@@ -96,6 +96,12 @@ void load_traffic(TrafficMap &traffic) {
         continue;
       }
 
+      // Bug 7: Vehicle IDs must be positive
+      if (vehicleID <= 0) {
+        cout << "Warning: Vehicle ID must be positive. Skipping.\n";
+        continue;
+      }
+
       // Bug 3: Only lanes 1, 2, and 3 are valid
       if (lane >= 1 && lane <= 3) {
         traffic[intersection][lane - 1].push_back(vehicleID);

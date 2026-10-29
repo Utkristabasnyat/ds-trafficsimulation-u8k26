@@ -31,3 +31,8 @@ Bug 6: Extra characters in lane number
 Problem: When a lane number contained numbers followed by letters, the program accepted the record because stoi() ignored the extra characters.
 Fix: Added a position check after stoi() to make sure the entire lane number is valid.
 Testing: Changed lane number 1 to 1ABC. The program display a warning and loaded only 99 valid records. After restoring the original file, all 100 records loaded successfully.
+
+Bug 7: Negative or zero vehicle ID
+Problem: The program accepted negative vehicle IDs cause it did not check whether a vehicle ID was positive.
+Fix: Added a condition to reject vehicle IDs less than or equal to zero and display a warning.
+Testing: Changed vehicle ID 101 to -101. The program displayed a warning and loaded only 99 valid records. After restoring the original file, all 100 records loaded successfully.
